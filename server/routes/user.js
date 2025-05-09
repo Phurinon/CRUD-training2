@@ -3,6 +3,8 @@ const router = express.Router();
 const { Employee } = require("../models/employee");
 const { auth, adminCheck } = require("../Middleware/auth");
 const logger = require("../logger"); // ✅ นำเข้า logger
+const { Role } = require("../models/role");
+const { Op } = require('sequelize');
 
 router.get("/list", auth, async (req, res) => {
   try {
@@ -125,6 +127,43 @@ router.get("/check-email", async (req, res) => {
   } catch (err) {
     logger.error("GET /check-email - Error: " + err.message, err);
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get('/get-roles', async (req, res) => {
+  try {
+    const roles = await Role.findAll();
+    logger.info(`GET /get-roles - Fetched roles: ${roles.length}`);
+    res.json(roles);
+  }catch(err){
+    logger.error("GET /check-email - Error: " + err.message, err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/filter", async (req, res) => {
+  try {
+    const { role, gender } = req.query;
+    const where = {};
+    if (role) {
+      where.role = {
+      [Op.in]: role.split(','), // Sequelize
+    }};
+    if (gender) {
+      where.gender = {
+        [Op.in]: gender.split(","),
+      };
+    }
+
+    const users = await Employee.findAll({ where });
+    logger.info(`GET /filter - Employee found: ${!!users}`);
+    res.json(users);
+  } catch (err) {
+    logger.error(`Error fetching employee by filter (${req.query})`, err);
+    res.json({
+      message: "Error fetching users",
+      errors: err.errors?.map((e) => e.message) || [err.message],
+    });
   }
 });
 

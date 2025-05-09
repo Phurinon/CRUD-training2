@@ -3,11 +3,11 @@ dotenv.config();
 
 module.exports = {
   development: {
-    username: 'postgres',
+    username: process.env.SUPABASE_USER,
     password: process.env.SUPABASE_PASSWORD,
-    database: 'postgres',
+    database: process.env.SUPABASE_DB,
     host: process.env.SUPABASE_HOST,
-    port: 5432,
+    port: process.env.SUPABASE_PORT,
     dialect: 'postgres',
     dialectOptions: {
       ssl: {
