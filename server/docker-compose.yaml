@@ -1,0 +1,33 @@
+version: '3'
+name: crud-training
+services:
+  node-server:
+    container_name: crud-server
+    build: .
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    env_file: 
+      - .env
+    ports:
+      - "5000:5000"
+    networks:
+      - crud-training-net
+
+  db:
+    image: postgres:latest
+    container_name: crud-training-db
+    environment:
+      - POSTGRES_PASSWORD=${SUPABASE_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - crud-training-db:/var/lib/postgresql/data
+    networks:
+      - crud-training-net
+
+volumes:
+  crud-training-db:
+
+networks:
+  crud-training-net:
