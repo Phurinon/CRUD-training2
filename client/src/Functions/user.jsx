@@ -66,3 +66,10 @@ export const update = async (id, data) => {
 export const check = async (email) => {
   return await axios.get(API_URL + "/user/check-email", { params: { email } });
 };
+
+export const getRole = async()=>{
+    const roles = await axios.get(API_URL + "/user/get-roles", {
+      headers: getAuthHeaders(),
+    });
+    return roles;
+}

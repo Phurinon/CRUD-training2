@@ -13,6 +13,7 @@ import { getData, read, remove, update } from "../Functions/user";
 import { Button } from "@mui/material";
 import { Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import Filter from "../components/Filter";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -126,10 +127,26 @@ export default function Info() {
     }
   };
 
+  // Filter
+  const [filter, setFilter] = useState('');
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilter((prevFilter) => ({
+      ...prevFilter,
+      [name]: value,
+    }));
+  }
+
   return (
-    <div>
-      <div className="flex flex-col items-center justify-center ">
-        <div className="absolute top-15 right-20">
+    <>
+      <div className="mx-15 mt-10 ">
+        <div className="border-solid-red-500 border-2 rounded-lg p-5">
+          <Filter filter={filter} handleFilterChange={handleFilterChange} />
+        </div>
+      </div>
+      <div className="flex flex-row-reverse justify-center">
+        <div className="absolute mt-2 sm:right-20 right-5">
           <Button
             type="button"
             fullWidth
@@ -199,6 +216,6 @@ export default function Info() {
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </>
   );
 }

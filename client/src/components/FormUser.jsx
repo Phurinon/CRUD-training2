@@ -16,6 +16,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import theme from "./Theme";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { create, check } from "../Functions/user";
+import { getRole } from '../Functions/user';
 
 import Swal from "sweetalert2";
 
@@ -39,9 +40,24 @@ export default function FormUser() {
     gender: "",
   });
 
+  const [roles, setRoles] = useState([]); // ตัวเลือก role
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+      const fetchRoles = async () => {
+        try {
+          const res = await getRole() // เปลี่ยน URL ตาม API ของคุณ
+          const roleNames = res.data.map(item => item.Role); // สมมุติว่า API ส่งกลับ array ของ object ที่มี property ชื่อ name
+          setRoles(roleNames); // สมมุติว่าเป็น array ของ string
+        } catch (err) {
+          console.error('Error fetching roles:', err);
+        }
+      };
+      fetchRoles();
+    }, []);
 
   // ฟังก์ชันตรวจสอบข้อมูลก่อนส่ง
   const validate = async () => {
@@ -207,19 +223,26 @@ export default function FormUser() {
                 error={!!errors.age}
                 helperText={errors.age}
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="role"
-                label="Role"
-                id="role"
-                autoComplete="role"
-                value={form.role}
-                onChange={handleChange}
-                error={!!errors.role}
-                helperText={errors.role}
-              />
+              {/* Roles Select */}
+              <FormControl fullWidth margin="normal" required>
+                <InputLabel id="gender-label">Role</InputLabel>
+                <Select
+                  labelId="role-label"
+                  id="role"
+                  value={form.role}
+                  label="Role"
+                  name="role"
+                  onChange={handleChange}
+                  error={!!errors.role}
+                  helperText={errors.role}
+                >
+                {roles.map((role) => (
+                  <MenuItem key={role} value={role}>
+                    {role}
+                  </MenuItem>
+                ))}
+                </Select>
+              </FormControl>
               {/* Gender Select */}
               <FormControl fullWidth margin="normal" required>
                 <InputLabel id="gender-label">Gender</InputLabel>
