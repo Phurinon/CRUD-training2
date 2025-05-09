@@ -7,15 +7,14 @@ const { Sequelize } = require("sequelize");
 // console.log('db config log')
 //?pgbouncer=true&connection_limit=1
 
-const sequelize = new Sequelize(`${process.env.SUPABASE_URI}`,
+const sequelize = new Sequelize(
+  process.env.SUPABASE_DB,
+  process.env.SUPABASE_USER,
+  process.env.SUPABASE_PASSWORD,
   {
-    dialect: 'postgres',
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false, // บางครั้งต้องปิดการตรวจสอบ cert
-      },
-    },
+    host: process.env.SUPABASE_HOST,
+    port: process.env.SUPABASE_PORT,
+    dialect: "postgres",
   }
 );
 
@@ -29,9 +28,3 @@ const connectDB = async () => {
 };
 
 module.exports = { sequelize, connectDB };
-
-// db_password: process.env.MARIADB_PASSWORD,
-//     db_user: process.env.MARIADB_USER,
-//     db_db: process.env.MARIADB_DB,
-//     db_port: process.env.MARIADB_PORT,
-//     db_host: process.env.MARIADB_HOST
