@@ -73,3 +73,15 @@ export const getRole = async()=>{
     });
     return roles;
 }
+
+
+export const filterUser = async (role, gender) => {
+  const response = await axios.get(API_URL + "/user/filter", {
+    headers: getAuthHeaders(),
+    params: {
+      role: Array.isArray(role) ? role.join(",") : role,
+      gender: Array.isArray(gender) ? gender.join(",") : gender,
+    },
+  });
+  return response.data;
+};
